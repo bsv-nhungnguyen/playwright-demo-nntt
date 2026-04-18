@@ -77,6 +77,21 @@ jobs:
 
           echo "target=$TARGET" >> "$GITHUB_OUTPUT"
 
+      - name: Prepare report metadata
+        id: report_meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          STAMP="$(date -u +%Y%m%d_%H%M%S)"
+          REPORT_FILENAME="pytest-report-${STAMP}.html"
+          REPORT_PATH="reports/${REPORT_FILENAME}"
+          ARTIFACT_NAME="pytest-html-report-${STAMP}"
+
+          echo "stamp=${STAMP}" >> "$GITHUB_OUTPUT"
+          echo "report_filename=${REPORT_FILENAME}" >> "$GITHUB_OUTPUT"
+          echo "report_path=${REPORT_PATH}" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=${ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
       - name: Run tests and generate HTML report
         env:
           PYTHONBREAKPOINT: "0"
@@ -86,15 +101,33 @@ jobs:
           pytest "${{ steps.target.outputs.target }}" \
             -o addopts="-v -s" \
             --browser chromium \
-            --html=reports/pytest-report.html \
+            --html="${{ steps.report_meta.outputs.report_path }}" \
             --self-contained-html
 
       - name: Upload pytest-html report
         if: always()
+        id: upload_report
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-html-report
-          path: |
-            reports/pytest-report.html
-            pytest-report.html
+          name: ${{ steps.report_meta.outputs.artifact_name }}
+          path: ${{ steps.report_meta.outputs.report_path }}
           if-no-files-found: warn
+
+      - name: Add quick report links to run summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## Pytest HTML Report"
+            echo ""
+            if [[ -n "${{ steps.upload_report.outputs.artifact-url }}" ]]; then
+              echo "- Artifact: ${{ steps.report_meta.outputs.artifact_name }}"
+              echo "- File: ${{ steps.report_meta.outputs.report_filename }}"
+              echo "- Quick download: [${{ steps.report_meta.outputs.artifact_name }}](${{ steps.upload_report.outputs.artifact-url }})"
+            else
+              echo "- Artifact URL is unavailable for this run."
+            fi
+            echo "- Run summary page: [Open this workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+            echo ""
+            echo "After downloading the artifact zip, extract and open ${{ steps.report_meta.outputs.report_filename }} in your browser."
+          } >> "$GITHUB_STEP_SUMMARY"
