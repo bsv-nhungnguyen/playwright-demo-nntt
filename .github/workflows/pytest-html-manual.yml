@@ -20,6 +20,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
     steps:
       - name: Checkout code
@@ -82,8 +84,8 @@ jobs:
         run: |
           mkdir -p reports
           pytest "${{ steps.target.outputs.target }}" \
+            -o addopts="-v -s" \
             --browser chromium \
-            --headless \
             --html=reports/pytest-report.html \
             --self-contained-html
 
@@ -92,5 +94,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pytest-html-report
-          path: reports/pytest-report.html
-          if-no-files-found: error
+          path: |
+            reports/pytest-report.html
+            pytest-report.html
+          if-no-files-found: warn
