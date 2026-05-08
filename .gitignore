@@ -51,3 +51,6 @@ htmlcov/
 
 #.html 
 pytest-report.html
+
+# Trace files
+test-artifacts/

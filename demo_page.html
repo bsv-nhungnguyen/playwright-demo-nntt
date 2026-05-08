@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Playwright Demo – Advanced Automation</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      min-height: 100vh;
+      color: #e0e0e0;
+      padding: 24px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 32px;
+      letter-spacing: 1px;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 28px;
+      backdrop-filter: blur(8px);
+    }
+
+    .section h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #a78bfa;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section h2::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 18px;
+      background: linear-gradient(180deg, #a78bfa, #60a5fa);
+      border-radius: 2px;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      margin: 4px;
+    }
+
+    .btn-primary   { background: linear-gradient(135deg,#7c3aed,#4f46e5); color:#fff; }
+    .btn-success   { background: linear-gradient(135deg,#059669,#10b981); color:#fff; }
+    .btn-warning   { background: linear-gradient(135deg,#d97706,#f59e0b); color:#fff; }
+    .btn-danger    { background: linear-gradient(135deg,#dc2626,#ef4444); color:#fff; }
+    .btn-info      { background: linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; }
+
+    button:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+
+    iframe {
+      width: 100%;
+      border: 2px solid rgba(167,139,250,0.4);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    input[type="text"], input[type="email"] {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+      width: 220px;
+      margin: 4px;
+    }
+
+    #dialog-result, #prompt-result, #confirm-result {
+      margin-top: 10px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: rgba(96,165,250,0.15);
+      border: 1px solid rgba(96,165,250,0.3);
+      font-size: 0.85rem;
+      min-height: 36px;
+      color: #93c5fd;
+    }
+
+    .popup-content {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      display: none;
+    }
+
+    .popup-content.active { display: flex; }
+
+    .popup-box {
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      border: 1px solid rgba(167,139,250,0.5);
+      border-radius: 16px;
+      padding: 32px;
+      width: 380px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .popup-box h3 { color: #a78bfa; margin-bottom: 12px; font-size: 1.2rem; }
+    .popup-box p  { color: #c4b5fd; margin-bottom: 20px; font-size: 0.9rem; }
+
+    #frame-msg { color: #34d399; margin-top: 10px; font-size: 0.85rem; min-height: 24px; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(167,139,250,0.2);
+      color: #a78bfa;
+      margin-left: 6px;
+    }
+
+    /* Inner iframe form styles */
+    #iframe-form-container {
+      padding: 16px;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🎭 Playwright Advanced Demo</h1>
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 – IFRAME
+══════════════════════════════════════════ -->
+<div class="section" id="section-iframe">
+  <h2>1. Frames &amp; Iframes <span class="tag">iframe</span></h2>
+
+  <!-- Inline iframe using srcdoc -->
+  <iframe id="demo-iframe" srcdoc="
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: sans-serif; padding: 16px; background:#f0f4ff; }
+        h3 { color: #4f46e5; margin-bottom: 12px; }
+        input { padding: 8px; border-radius: 6px; border: 1px solid #c7d2fe; width: 200px; margin-right: 8px; }
+        button { padding: 8px 16px; background: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        #frame-output { margin-top: 10px; color: #059669; font-weight: 600; }
+      </style>
+    </head>
+    <body>
+      <h3>📋 Form inside iframe</h3>
+      <input type='text' id='iframe-name' placeholder='Enter your name' />
+      <button id='iframe-submit-btn' onclick=&quot;document.getElementById(&apos;frame-output&apos;).textContent = &apos;Hello, &apos; + document.getElementById(&apos;iframe-name&apos;).value + &apos;!&apos;&quot;>Submit</button>
+      <div id='frame-output'></div>
+    </body>
+    </html>
+  " height="160"></iframe>
+
+  <!-- Nested iframe demo: click button bên dưới để mở iframe con -->
+  <button class="btn-info" id="btn-open-nested"
+    onclick="document.getElementById('iframe-A').style.display='block'; this.style.display='none'">
+    🔲 Mở Iframe A (3 tầng lồng nhau)
+  </button>
+
+  <iframe id="iframe-A" src="iframe_a.html"
+    height="220" style="display:none; margin-top:8px; border:2px solid #7c3aed;">
+  </iframe>
+
+  <div id="frame-msg"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 – WINDOWS / TABS / POPUPS
+══════════════════════════════════════════ -->
+<div class="section" id="section-windows">
+  <h2>2. Windows, Tabs &amp; Popups <span class="tag">multi-page</span></h2>
+
+  <button class="btn-primary" id="btn-new-tab"
+    onclick="window.open('https://playwright.dev', '_blank')">
+    🔗 Open New Tab (playwright.dev)
+  </button>
+
+  <button class="btn-info" id="btn-popup"
+    onclick="window.open('', 'popup', 'width=400,height=300,top=100,left=100')
+             .document.write('<h2 style=font-family:sans-serif;padding:20px>✅ Popup Window</h2><p style=padding:20px>This is a browser popup!</p>')">
+    🪟 Open Popup Window
+  </button>
+
+  <button class="btn-success" id="btn-internal-modal"
+    onclick="document.getElementById('modal-overlay').classList.add('active')">
+    💬 Open In-page Modal
+  </button>
+</div>
+
+<!-- In-page modal (not a real new window, but useful for popup UI tests) -->
+<div class="popup-content" id="modal-overlay">
+  <div class="popup-box">
+    <h3>🎉 In-page Modal</h3>
+    <p>This modal simulates a popup dialog within the same page context.</p>
+    <input type="text" id="modal-input" placeholder="Type something..." style="margin-bottom:12px;width:100%;padding:8px;border-radius:6px;border:1px solid #7c3aed;background:rgba(255,255,255,0.1);color:#fff"/>
+    <br/>
+    <button class="btn-success" id="modal-confirm-btn"
+      onclick="document.getElementById('modal-result').textContent = 'Confirmed: ' + document.getElementById('modal-input').value; document.getElementById('modal-overlay').classList.remove('active')">
+      ✅ Confirm
+    </button>
+    <button class="btn-danger" id="modal-cancel-btn"
+      onclick="document.getElementById('modal-overlay').classList.remove('active')">
+      ✖ Cancel
+    </button>
+  </div>
+</div>
+<p id="modal-result" style="text-align:center; color:#34d399; margin-top:-16px; margin-bottom:20px; min-height:20px;"></p>
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 – DIALOGS
+══════════════════════════════════════════ -->
+<div class="section" id="section-dialogs">
+  <h2>3. Dialogs (Alert, Confirm, Prompt) <span class="tag">dialog</span></h2>
+
+  <!-- Alert -->
+  <button class="btn-warning" id="btn-alert"
+    onclick="alert('⚠️ This is an Alert dialog!')">
+    🔔 Trigger Alert
+  </button>
+
+  <!-- Confirm -->
+  <button class="btn-info" id="btn-confirm"
+    onclick="var r = confirm('Do you confirm this action?');
+             document.getElementById('confirm-result').textContent = r ? '✅ Confirmed!' : '❌ Cancelled.'">
+    ❓ Trigger Confirm
+  </button>
+
+  <!-- Prompt -->
+  <button class="btn-primary" id="btn-prompt"
+    onclick="var r = prompt('Enter your name:', 'Playwright');
+             document.getElementById('prompt-result').textContent = r !== null ? '👤 Name entered: ' + r : '⚠️ Prompt dismissed.'">
+    ✏️ Trigger Prompt
+  </button>
+
+  <div id="confirm-result"></div>
+  <div id="prompt-result"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 – SCREENSHOT & VIDEO trigger
+══════════════════════════════════════════ -->
+<div class="section" id="section-screenshot">
+  <h2>4. Screenshot &amp; Video Test Triggers <span class="tag">capture</span></h2>
+
+  <button class="btn-danger" id="btn-trigger-failure"
+    onclick="document.getElementById('failure-msg').textContent='💥 Simulated failure state!'">
+    💥 Simulate Failure State
+  </button>
+
+  <button class="btn-success" id="btn-reset-state"
+    onclick="document.getElementById('failure-msg').textContent=''">
+    🔄 Reset State
+  </button>
+
+  <div id="failure-msg" style="color:#f87171; margin-top:10px; font-weight:600; min-height:24px;"></div>
+  <p style="color:#94a3b8; font-size:0.8rem; margin-top:8px;">
+    Playwright will automatically capture screenshots &amp; video when a test fails.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SECTION 5 – TRACING indicator
+══════════════════════════════════════════ -->
+<div class="section" id="section-tracing">
+  <h2>5. Tracing &amp; Hooks Demo <span class="tag">trace</span></h2>
+
+  <input type="text"  id="trace-name"  placeholder="Your name" />
+  <input type="email" id="trace-email" placeholder="your@email.com" />
+  <button class="btn-primary" id="btn-trace-submit"
+    onclick="
+      var n = document.getElementById('trace-name').value;
+      var e = document.getElementById('trace-email').value;
+      document.getElementById('trace-result').textContent = (n && e)
+        ? '✅ Submitted: ' + n + ' (' + e + ')'
+        : '⚠️ Please fill both fields.';
+    ">
+    📤 Submit Form
+  </button>
+
+  <div id="trace-result" style="margin-top:10px; color:#67e8f9; min-height:28px; font-size:0.85rem;"></div>
+  <p style="color:#94a3b8; font-size:0.8rem; margin-top:8px;">
+    Tracing records every network request, DOM snapshot, and action for post-run analysis.
+  </p>
+</div>
+
+</body>
+</html>

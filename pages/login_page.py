@@ -2,7 +2,7 @@ from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
-    """Login page for Eventos — used by root conftest.py and test_login.py."""
+    """Login page for Odaku Admin — used by root conftest.py and test_login.py."""
 
     def __init__(self, page):
         super().__init__(page)

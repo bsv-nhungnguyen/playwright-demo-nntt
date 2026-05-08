@@ -328,7 +328,7 @@ div.media {
   </head>
   <body>
     <h1 id="title">pytest-report.html</h1>
-    <p>Report generated on 03-May-2026 at 18:06:00 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
+    <p>Report generated on 08-May-2026 at 15:36:33 by <a href="https://pypi.python.org/pypi/pytest-html">pytest-html</a>
         v4.2.0</p>
     <div id="environment-header">
       <h2>Environment</h2>
@@ -383,7 +383,7 @@ div.media {
         <h2>Summary</h2>
         <div class="additional-summary prefix">
         </div>
-        <p class="run-count">0 test took 25 ms.</p>
+        <p class="run-count">1 test took 00:00:08.</p>
         <p class="filter">(Un)check the boxes to filter the results.</p>
         <div class="summary__reload">
           <div class="summary__reload__button hidden" onclick="location.reload()">
@@ -393,8 +393,8 @@ div.media {
         <div class="summary__spacer"></div>
         <div class="controls">
           <div class="filters">
-            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" disabled>
-            <span class="failed">0 Failed,</span>
+            <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="failed" >
+            <span class="failed">1 Failed,</span>
             <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="passed" disabled>
             <span class="passed">0 Passed,</span>
             <input checked="true" class="filter" name="filter_checkbox" type="checkbox" data-test-result="skipped" disabled>
@@ -431,7 +431,7 @@ div.media {
       </thead>
     </table>
   <footer>
-    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.14.3&#34;, &#34;Platform&#34;: &#34;macOS-15.6-arm64-arm-64bit-Mach-O&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;9.0.3&#34;, &#34;pluggy&#34;: &#34;1.6.0&#34;}, &#34;Plugins&#34;: {&#34;playwright&#34;: &#34;0.7.2&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;, &#34;html&#34;: &#34;4.2.0&#34;, &#34;base-url&#34;: &#34;2.1.0&#34;, &#34;allure-pytest&#34;: &#34;2.15.3&#34;}, &#34;Base URL&#34;: &#34;&#34;}, &#34;tests&#34;: {}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;pytest-report.html&#34;}"></div>
+    <div id="data-container" data-jsonblob="{&#34;environment&#34;: {&#34;Python&#34;: &#34;3.14.4&#34;, &#34;Platform&#34;: &#34;macOS-15.6-arm64-arm-64bit-Mach-O&#34;, &#34;Packages&#34;: {&#34;pytest&#34;: &#34;9.0.3&#34;, &#34;pluggy&#34;: &#34;1.6.0&#34;}, &#34;Plugins&#34;: {&#34;playwright&#34;: &#34;0.7.2&#34;, &#34;metadata&#34;: &#34;3.1.1&#34;, &#34;html&#34;: &#34;4.2.0&#34;, &#34;base-url&#34;: &#34;2.1.0&#34;}, &#34;Base URL&#34;: &#34;&#34;}, &#34;tests&#34;: {&#34;tests/demo_automation/test_advanced_demo.py::TestTracing::test_tracing_02_trace_form_submission[chromium]&#34;: [{&#34;extras&#34;: [], &#34;result&#34;: &#34;Failed&#34;, &#34;testId&#34;: &#34;tests/demo_automation/test_advanced_demo.py::TestTracing::test_tracing_02_trace_form_submission[chromium]&#34;, &#34;duration&#34;: &#34;00:00:08&#34;, &#34;resultsTableRow&#34;: [&#34;&lt;td class=\&#34;col-result\&#34;&gt;Failed&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-testId\&#34;&gt;tests/demo_automation/test_advanced_demo.py::TestTracing::test_tracing_02_trace_form_submission[chromium]&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-duration\&#34;&gt;00:00:08&lt;/td&gt;&#34;, &#34;&lt;td class=\&#34;col-links\&#34;&gt;&lt;/td&gt;&#34;], &#34;log&#34;: &#34;self = &amp;lt;test_advanced_demo.TestTracing object at 0x106d7a990&amp;gt;\nbrowser = &amp;lt;Browser type=&amp;lt;BrowserType name=chromium executable_path=/Users/nhungnguyen/Library/Caches/ms-playwright/chromium-1208/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing&amp;gt; version=145.0.7632.6&amp;gt;\n\n    def test_tracing_02_trace_form_submission(self, browser: Browser):\n        &amp;quot;&amp;quot;&amp;quot;\n        [Tracing-02] Trace m\u1ed9t lu\u1ed3ng \u0111i\u1ec1n form v\u00e0 submit.\n        \u0110i\u1ec1n t\u00ean + email trong section Tracing \u2192 submit \u2192 d\u1eebng trace.\n        H\u1eefu \u00edch \u0111\u1ec3 ph\u00e2n t\u00edch t\u1ea1i sao form kh\u00f4ng submit \u0111\u00fang.\n        &amp;quot;&amp;quot;&amp;quot;\n        context = browser.new_context()\n        context.tracing.start(screenshots=True, snapshots=True)\n    \n        page = context.new_page()\n        page.goto(DEMO_URL)\n    \n        # \u0110i\u1ec1n form\n        page.locator(&amp;quot;#trace-name&amp;quot;).fill(&amp;quot;Test User&amp;quot;)\n        page.locator(&amp;quot;#trace-email&amp;quot;).fill(&amp;quot;test@example.com&amp;quot;)\n        page.locator(&amp;quot;#btn-trace-submit&amp;quot;).click()\n    \n        # X\u00e1c minh k\u1ebft qu\u1ea3\n&amp;gt;       expect(page.locator(&amp;quot;#trace-result&amp;quot;)).to_contain_text(&amp;quot;Done Submit&amp;quot;)\nE       AssertionError: Locator expected to contain text &amp;#x27;Done Submit&amp;#x27;\nE       Actual value: \u2705 Submitted: Test User (test@example.com) \nE       Call log:\nE         - Expect &amp;quot;to_contain_text&amp;quot; with timeout 5000ms\nE         - waiting for locator(&amp;quot;#trace-result&amp;quot;)\nE           9 \u00d7 locator resolved to &amp;lt;div id=&amp;quot;trace-result&amp;quot;&amp;gt;\u2705 Submitted: Test User (test@example.com)&amp;lt;/div&amp;gt;\nE             - unexpected value &amp;quot;\u2705 Submitted: Test User (test@example.com)&amp;quot;\n\ntests/demo_automation/test_advanced_demo.py:525: AssertionError\n&#34;}]}, &#34;renderCollapsed&#34;: [&#34;passed&#34;], &#34;initialSort&#34;: &#34;result&#34;, &#34;title&#34;: &#34;pytest-report.html&#34;}"></div>
     <script>
       (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const { getCollapsedCategory, setCollapsedIds } = require('./storage.js')
